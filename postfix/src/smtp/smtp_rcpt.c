@@ -171,7 +171,7 @@ void    smtp_rcpt_done(SMTP_STATE *state, SMTP_RESP *resp, RECIPIENT *rcpt)
     /*
      * Report success and delete the recipient from the delivery request.
      * Defer if the success can't be reported.
-     * 
+     *
      * Note: the DSN action is ignored in case of address probes.
      */
     dsb_update(why, resp->dsn, dsn_action, DSB_MTYPE_DNS, STR(iter->host),
@@ -180,6 +180,7 @@ void    smtp_rcpt_done(SMTP_STATE *state, SMTP_RESP *resp, RECIPIENT *rcpt)
     status = sent(DEL_REQ_TRACE_FLAGS(request->flags),
 		  request->queue_id, &request->msg_stats, rcpt,
 		  session->namaddrport, DSN_FROM_DSN_BUF(why));
+    msg_info("postfix-id=%s, message-id=%s, dsn=%s, status=%s", request->queue_id, request->sender, DSN_FROM_DSN_BUF(why)->status, DSN_FROM_DSN_BUF(why)->reason);
     if (status == 0)
 	if (request->flags & DEL_REQ_FLAG_SUCCESS)
 	    deliver_completed(state->src, rcpt->offset);
